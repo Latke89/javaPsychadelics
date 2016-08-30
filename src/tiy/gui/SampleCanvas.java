@@ -18,7 +18,7 @@ public class SampleCanvas extends Application {
 	final double DEFAULT_SCENE_HEIGHT = 600;
 	final double DEFAULT_SCENE_WIDTH = 800;
 	double strokeSize = 2;
-
+	int numCircles = 100;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -45,6 +45,7 @@ public class SampleCanvas extends Application {
 				System.out.println("Key pressed was " + event.getText() + " " + event.getCode());
 				if (event.getText().equalsIgnoreCase("c")) {
 					graphicsContext.clearRect(0, 0, DEFAULT_SCENE_WIDTH,DEFAULT_SCENE_HEIGHT);
+
 				}
 				if (event.getText().equalsIgnoreCase("a")) {
 					graphicsContext.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
@@ -61,6 +62,18 @@ public class SampleCanvas extends Application {
 						strokeSize++;
 					}
 				}
+				if (event.getCode().equals(KeyCode.LEFT)) {
+					numCircles-=10;
+					if(numCircles == 100){
+						numCircles+=10;
+					}
+				}
+				if (event.getCode().equals(KeyCode.RIGHT)) {
+					numCircles+=10;
+					if (numCircles == 500) {
+						numCircles -=10;
+					}
+				}
 			}
 		});
 
@@ -70,12 +83,22 @@ public class SampleCanvas extends Application {
 			public void handle(MouseEvent e) {
 				System.out.println("x: " + e.getX() + ", y: " + e.getY());
 				graphicsContext.strokeOval(e.getX(), e.getY(), strokeSize, strokeSize);
-				if (e.isControlDown()) {
+				if (e.isControlDown() && e.isDragDetect()) {
 					graphicsContext.fillOval(e.getX(), e.getY(), strokeSize, strokeSize);
-					graphicsContext.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+//					graphicsContext.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+					graphicsContext.clearRect(0, 0, DEFAULT_SCENE_WIDTH,DEFAULT_SCENE_HEIGHT);
+					drawShapes(graphicsContext);
+					for (int counter = 0; counter < numCircles; counter++) {
+						graphicsContext.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
+						graphicsContext.fillOval((Math.random() * e.getX()), (Math.random() * e.getY()), strokeSize, strokeSize);
+						graphicsContext.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+					}
+
 				}
 			}
 		});
+
+
 
 
 		rootGroup.getChildren().add(canvas);
@@ -85,9 +108,9 @@ public class SampleCanvas extends Application {
 		primaryStage.show();
 	}
 
-//	private void drawShapes(GraphicsContext gc) {
-//		gc.setFill(Color.GREEN);
-//		gc.setStroke(Color.BLUE);
+	private void drawShapes(GraphicsContext gc) {
+//		gc.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+//		gc.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
 //		gc.setLineWidth(5);
 //		gc.strokeLine(40, 10, 10, 40);
 //		gc.fillOval(10, 60, 30, 30);
@@ -106,7 +129,7 @@ public class SampleCanvas extends Application {
 //				new double[]{210, 210, 240, 240}, 4);
 //		gc.strokePolyline(new double[]{110, 140, 110, 140},
 //				new double[]{210, 210, 240, 240}, 4);
-//	}
+	}
 
 	public static void main(String[] args) {
 		launch(args);
